@@ -1,0 +1,328 @@
+goto this slide
+-----------------------------
+to run postgres->   sudo -i -u postgres
+then to run the shell->     psql
+
+to create new db->          createdb -dbname
+to go inside that db->      psql -d dbname
+to know the connection info->       \conninfo
+to see the table structure inside any database->           \d tableName
+to see databases->            \l
+to connect to the existing database->             \connect dbname;
+to delete a database->                  drop database dbname;
+to see all the tables in a database->   \dt
+
+queries I made-
+
+//creating a table person
+CREATE TABLE person(
+	id int, 
+	name varchar(100),
+	city varchar(100),
+)
+
+//inserting values in it.
+INSERT INTO person (id, name, city) 
+VALUES
+(104, 'Alex', 'Pune');
+(105, 'Anuj', 'Pune');
+
+
+//show everything from person table
+SELECT * FROM person
+
+
+//shows selected things from person table
+SELECT name, city from person
+
+
+//updating any entry
+UPDATE person 
+          SET city = 'Nagpur'
+WHERE name = 'Anup'
+
+//Deleting any entry
+DELETE FROM person
+WHERE id= 104;
+
+----------------------------------------------------
+
+
+DATATYPES- (Goto postgres datatypes)
+Numeric - INT DOUBLE FLOAT DECIMAL etc
+String - VARCHAR
+Date - DATE
+Boolean - BOOLEAN
+
+----------------------------------------------------
+
+Constraints (Goto postgres constaints)
+
+A constraint is a rule applied to a column.
+
+PRIMARY KEY- It uniquely identifies each record in a table. 
+          (a table can have only one primary key, it cannot be null, and it must be unique).
+          
+
+NOT NULL- CREATE TABLE person(
+	id int NOT NULL PRIMARY KEY, 
+	name varchar(100) NOT NULL,
+	city varchar(100) NOT NULL DEFAULT 'Pune',
+)
+
+AUTO INCREMENTING- (SERIAL) on every new insert it'll increment the integer value.
+          CREATE TABLE employees (
+                    id SERIAL PRIMARY KEY,
+                    firstname varchar(50),
+                    lastname varchar(50),
+                    hire_date DATE NOT NULL
+          )
+          
+          note- when inserting data, date must be in 'yyyy-mm-dd'
+          
+          
+CHECK CONSTRAINT- 
+          CREATE TABLE contacts (
+                    name VARCHAR(50),
+                    phone VARCHAR(15) UNIQUE CHECK(LENGTH(phone) >= 10)
+          );
+
+NAMED CONSTRAINT-
+          CREATE TABLE contacts (
+                    name VARCHAR(50),
+                    phone VARCHAR(15) UNIQUE,
+                    CONSTRAINT num_not_less_than_10digits CHECK (LENGTH(phone) >= 10),
+                    )
+
+          //we'll get num_not_less_than_10digits when we get error
+-----------------------------------------------------
+
+when providing a primary key to the entry suppose id, in the first entry we need to provide all the entries, after that we need to set the value of id to the first id we provided. like this-
+goto \d tablename ==> in the primary key default section copy the string inside of '...' ===> then run this command
+SELECT setMaster POSTGRESQL in ONE VIDEO: Beginner to Advanced Course For Beginners in Hindi | MPrashant
+val('employees_emp_id_seq', 1);
+
+after running this command check the current primary key using this command- 
+SELECT currval('employees_emp_id_seq');
+ it is setted to 1, then if you don't provide the primary key in the further entries, 
+ it will be fine it will increment the ID automatically.
+ 
+ ----------------------------------------------------
+ 
+ Clauses with queries--
+ 
+ using WHERE Clause
+ 
+ SELECT * from employees
+ WHERE dept=HR or salary>=30000
+ 
+ SELECT * from employees 
+ WHERE dept=HR AND salary<30000
+ 
+ //select employees from given dept.
+ SELECT * from employees WHERE dept IN ('IT', 'Finance', 'HR');
+ 
+ //will not select employees from given dept.
+ SELECT * from employees WHERE dept NOT IN ('IT', 'Finance', 'HR');
+ 
+
+ SELECT * FROM employees salary >=40000 AND salary <=65000;
+ 
+ //same as prev but using BETWEEN
+ SELECT * FROM employees WHERE salary BETWEEN 40000 AND 65000;   
+ 
+ //using order by to sort as per alphabetically or numerically. (by default ascending order) use DESC for descending 
+ SELECT * from employees ORDER BY name DESC
+ 
+ //show only 3 entries
+ SELECT * from employees LIMIT 3
+
+ //show only names starting with a
+ SELECT * from employees WHERE name LIKE 'A%';
+ 
+ //show only names ending with a (it is case sensitive)
+ SELECT * from employees WHERE name LIKE '%A';
+ 
+ //show only names with 'i' letter in between them
+ SELECT * from employees WHERE name LIKE '%i%';
+ 
+ //show only names with second letter as 'a' letter
+ SELECT * from employees WHERE name LIKE '_a%';
+ 
+ //show only those dept with 2 letters only
+ SELECT * from employees WHERE dept LIKE '__';
+ 
+ ----------------------------------------------------------
+ 
+ Aggregate functions
+ 
+ COUNT- counts the total by given parameter
+ 
+ SELECT COUNT(name) from employees;
+ 
+ SUM- sum all the given data from a table
+ 
+ SELECT SUM(salary) from employees;
+ 
+ AVG- avg of all from given parameter
+ 
+ SELECT AVG(salary) from employees;
+ 
+ MAX- maximum of all from given parameter
+ 
+ SELECT MAX(salary) from employees;
+ 
+------------------------------------------------------------
+
+ GROUP BY--
+ 
+ //this will group all the departments 
+ SELECT dept from employees GROUP BY dept;
+ 
+ //this will group all the deparments with their count in another column
+ SELECT dept, COUNT(emp_id) from employees GROUP BY dept;
+ 
+ //how much salary we're giving to employees of a particular departments
+ SELECT dept, SUM(salary) from employees GROUP BY dept
+ 
+ ------------------------------------------------------------
+ 
+ String Functions--
+ 
+ //CONCAT
+ //merges name with fname and name it fullname
+ SELECT CONCAT(name,' ',fname) AS fullname from employees;
+ 
+ //CONCAT_WS (with separator)
+ SELECT CONCAT_WS(':', emp_id, name, fname, dept) from employees WHERE emp_id=1;
+ 
+ 
+ //SUBSTR
+ //this will extract hello
+ SELECT SUBSTR('hello mate!', 1, 5);
+ 
+ 
+ //REPLACE
+ 
+ SELECT REPLACE('hey mate!', from_str, to_str);
+ 
+ //replace all depts of IT with TECH
+ SELECT REPLACE(dept, 'IT', 'TECH') from employees;
+ 
+ 
+ //REVERSE- reverses the string
+ 
+ SELECT REVERSE('hello')
+ 
+ 
+ //LENGTH- 
+ //extracts the legth of the given parameter
+ SELECT LENGTH(name) from employees;
+ 
+ //POSITION
+ SELECT POSITION('om' in 'thomas');
+ 
+ //TRIM
+ //provides original length never counts space of start and end.
+ SELECT LENGTH(TRIM('       Alright      ');
+ 
+ --------------------------------------------------------------
+ 
+ Query with subquery
+ //firstly the inside query will run then the outside.
+ SELECT * from employees WHERE salary=(SELECT max(salary) from employees);
+ 
+ ---------------------------------------------------------------
+ 
+ Altering Tables
+ 
+ //this will add a new column to the person table with default age 18
+ SELECT * from person;
+ ALTER TABLE person
+ ADD COLUMN age INT DEFAULT 18;
+ 
+ //delete a column from the table
+ SELECT * from person;
+ ALTER TABLE person
+ DROP COLUMN age;
+ 
+ //Rename a table name-
+ ALTER TABLE contacts
+ RENAME TO mycontacts
+ 
+ 
+ //changing the data type of the entry
+ ALTER TABLE person
+ ALTER COLUMN name
+ SET DATA TYPE VARCHAR(150);
+          //to add default value just use this in place of SET DATA TYPE...
+ SET DEFAULT 'unknown'
+          //likewise to remove default we can use this
+ DROP DEFAULT
+ 
+ ---------------------------------------------------------------
+ 
+ Relationships and its types-
+ 
+ There are 3 types of relationships- one to one, one to many, many to many 
+ 
+ we have one table for users and another table for details of the users, 
+ so in the first table one user can have one detail row, so it is a ONE TO ONE relationship (dono table me 1, 1 baar aaya)
+ 
+ we have one table of users and another table of task done by the users,
+ so one user can do multiple tasks in the task table, so it is a ONE TO MANY relationship.
+ 
+ we have one table for books and another for authors,
+ so one book can be written by many authors and many books can be written by one author, 
+ so it is a MANY TO MANY relationship.
+ 
+ ---------------------------------------------------------------
+ 
+ FOREIGN KEY-
+ 
+ we have 2 table one for the users and other for the order place by the user, and we are using the primary key 
+ of the user in the order table so it is a foreign key.
+ ek table me agar hum kisi doosre table ka primary key use kar rahe hai, to isse hum foreign key bolenge.
+ 
+ in the second table use the primary key of the first table like this-
+ create table orders (
+	order_id SERIAL PRIMARY KEY,
+	order_date DATE not null,
+	customer_id INTEGER not null,
+	FOREIGN KEY (customer_id) REFERENCES
+	users(customer_id)
+);
+
+//here users is the first table in which customer_id is what we are using as a foreign key in orders table
+----------------------------------------------------------------------
+
+JOIN-  if there is a connection we have established between 2 tables than to operate in these tables we make use of join.
+
+types of join
+
+- cross join => every row from one table is combined with every row from another table.
+
+Ex- SELECT * from users CROSS JOIN orders;
+
+- inner join => returns only the rows where there is a match between specified columns in both the left(or first) and right(or second) tables.
+
+used alias shorten table name-
+Ex- SELECT * from users u INNER JOIN orders o ON u.cutomer_id=o.customer_id
+
+using group by to see the customer name and the orders placed by him.
+Ex- SELECT users.customer_name from users INNER JOIN orders ON users.customer_id=orders.customer_id
+GROUP BY customer_name;
+
+- left join => returns all rows from the left(or first) table and matching rows from the right( or second) table.
+(contains all from left but matching rows from right)
+
+Ex- SELECT * from users u LEFT JOIN orders o ON u.customer_id=o.customer_id;
+
+- right join => returns all rows from the right(or first) table and matching rows from the left(or second) table.
+
+Ex- SELECT * from users u RIGHT JOIN orders o ON u.customer_id=o.customer_id;
+
+------------------------------------------------------------------------
+ 
+ 
+ 
