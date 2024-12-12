@@ -20,9 +20,8 @@ const Home = () => {
   }, []);
 
   const deleteHandler = async (id) => {
-
     console.log(id);
-    
+
     const res = await axios.delete(`http://localhost:4001/students/${id}`);
 
     if (res.status == 200) {
@@ -35,36 +34,50 @@ const Home = () => {
   return (
     <>
       <div className="p-4">
-        <h1 className="text-2xl text-center font-bold text-green-600 mb-6">
+        <h1 className="text-3xl text-center font-bold text-blue-500 mb-6">
           Student List
         </h1>
 
-        <div className="flex flex-col items-center justify-center border border-gray-300 rounded-lg shadow-md w-fit m-auto p-4">
-          {students.length > 0 ? (
-            students.map((student, index) => (
-              
-              <div
-                key={index}
-                className="flex gap-10 items-center border-b border-gray-200 py-2"
-              >
-                <div className="text-lg font-medium">
-                  Name:&nbsp; &nbsp;{student.name}
-                </div>
-                ||
-                <div className="text-lg font-medium">
-                  City:&nbsp; &nbsp;{student.city}
-                </div>
-                <button
-                  onClick={() => deleteHandler(student.roll_no)}
-                  className="p-3 rounded-lg bg-red-400 hover:bg-red-800 text-white"
-                >
-                  Delete
-                </button>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No students found.</p>
-          )}
+        <div className="overflow-x-auto w-[900px] m-auto rounded-xl border border-gray-300">
+          <table className="min-w-full border-collapse border border-gray-300 rounded-lg shadow-md">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border border-gray-200 p-2 text-left">Name</th>
+                <th className="border border-gray-200 p-2 text-left">City</th>
+                <th className="border border-gray-200 p-2 text-left">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {students.length > 0 ? (
+                students.map((student, index) => (
+                  <tr key={index} className="border-b border-gray-200">
+                    <td className="border border-gray-200 p-2 text-lg font-medium truncate">
+                      {student.name}
+                    </td>
+                    <td className="border border-gray-200 p-2 text-lg font-medium truncate">
+                      {student.city}
+                    </td>
+                    <td className="border border-gray-200 p-2">
+                      <button
+                        onClick={() => deleteHandler(student.roll_no)}
+                        className="p-2 rounded-lg bg-red-400 hover:bg-red-800 text-white"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3} className="text-center p-4 text-gray-500">
+                    No students found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </>

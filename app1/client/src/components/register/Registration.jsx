@@ -30,8 +30,8 @@ const Registration = () => {
 
   return (
     <>
-      <div className=" w-1/2 m-auto mt-20">
-        <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
+      <div className=" w-1/2 m-auto mt-5">
+        <h1 className="text-3xl font-bold text-blue-500 mb-6 text-center">Register</h1>
         <form
           action="#"
           className="max-w-md mx-auto shadow-md bg-blue-200 rounded-lg px-8 py-6"

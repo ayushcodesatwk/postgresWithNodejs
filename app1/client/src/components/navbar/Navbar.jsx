@@ -12,7 +12,9 @@ const Navbar = () => {
           <li onClick={() => navigate("/home")} className="hover:text-gray-300 hover:underline cursor-pointer">Home</li>
           <li onClick={() => navigate("/register")} className="hover:text-gray-300 hover:underline cursor-pointer">Register</li>
           <li onClick={() => navigate("/courses")} className="hover:text-gray-300 hover:underline cursor-pointer">Courses</li>
+          <li onClick={() => navigate("/sales")} className="hover:text-gray-300 hover:underline cursor-pointer">Sales</li>
           <li onClick={() => navigate("/cart")} className="hover:text-gray-300 hover:underline cursor-pointer">Cart</li>
+
         </ul>
       </nav>
     </>

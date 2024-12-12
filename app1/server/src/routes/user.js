@@ -33,6 +33,7 @@ router
     );
   });
 
+  //get student by id and delete
 router
   .route("/students/:id")
   .get((req, res) => {
@@ -50,16 +51,30 @@ router
       }
     );
   })
-  .delete((req, res) => {
+  .delete(async (req, res) => {
     const { id } = req.params;
     console.log("ID", id);
 
+    // return console.log(courses.rows);
+
+    //it's a foreign key so first delete it from sales than from students, only then it'll get deleted.
+    client.query(
+      `DELETE FROM course_sales WHERE student_id = $1`,
+      [id],
+      (err, result) => {
+        if (err) {
+          console.log(`ERROR DELETING SALES DATA-`, err);
+        } else {
+          console.log(`SALES DATA DELETED-`, result.rows);
+        }
+      }
+    );
+
+    //delete students data
     client.query(
       `DELETE FROM students WHERE roll_no = $1`,
       [id],
       (err, result) => {
-        console.log("kjsdafkj--------------");
-
         if (err) {
           console.log("Delete query failed:", err);
           return res.status(500).send("INTERNAL SERVER ERROR");
@@ -76,6 +91,19 @@ router
     );
   });
 
+  //get sales query
+  router.route("/sales").get((req, res) => {
+      client.query("SELECT * from course_sales", (err, result) => {
+          if(err){
+            console.log('get sales query error-', err);
+            return res.status(500).send("INTERNAL SERVER ERROR")
+          }
+          const allSales = result.rows;
+          return res.status(200).json(allSales);
+      })
+  })
+
+  
 router.route("/courses").get((req, res) => {
   client.query("SELECT * from courses", (err, result) => {
     if (err) {

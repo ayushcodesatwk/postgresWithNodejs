@@ -250,7 +250,7 @@ SELECT currval('employees_emp_id_seq');
  ALTER TABLE contacts
  RENAME TO mycontacts
  
- 
+ select * from course_sales
  //changing the data type of the entry
  ALTER TABLE person
  ALTER COLUMN name
@@ -323,6 +323,32 @@ Ex- SELECT * from users u LEFT JOIN orders o ON u.customer_id=o.customer_id;
 Ex- SELECT * from users u RIGHT JOIN orders o ON u.customer_id=o.customer_id;
 
 ------------------------------------------------------------------------
+          
+          REFERENCE- https://www.youtube.com/watch?v=rBPQ5fg_kiY
  
+ NORMALISATION-     designing a database in such a way that it avoids redundancy or duplicacy of data.
+                    There are different levels of normalisation which we can follow to normalise our data 
+                    each of these level have certain rules which we can follow to normalise our data.
+ TYPES-  1NF - 1st normal form ....... 4NF then BCNF- Boyce-codd normal form then 5NF, 6NF.
  
+ most of the companies normalise their data only until 3NF.
  
+ ========================================
+ 
+ RULES OF NORMALISATION FOR EACH LEVEL- 
+ 
+ 1NF-     -Every column/attribute need to have a single value.
+          -Each row should be unique. either through a single column or multiple column. Not mandatory to have primary key.
+
+
+ 2NF-     -Must be in 1NF
+          -All non key attributes must be fully dependent on candidate key. 
+          {candidate key (all the keys in a table) are columns which represents 2 or more keys in the table}
+          (suppose there are 2 keys in a table then columns which are dependent on key 1 but not in key 2 
+          so they are partially dependent on candidate key)Complete guide to Database Normalization in SQL
+          i.e if a non-key column is partially dependent on candidate key (subset of column forming candidate key) then split them into separate tables.
+          -Every table should have primary key and relationship between the tables should be formed using foreign key.
+          ( we can also create a separate table for relationship between all the tables. )
+          
+          
+ 3NF-     
